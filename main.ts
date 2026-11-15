@@ -582,7 +582,9 @@ function buildPlan(): void {
   const order = [...byIndex].sort((a, b) => a.cands.length - b.cands.length || b.req.weight - a.req.weight || a.i - b.i);
   const used = new Map<string, number>();
   for (const { i, cands } of order) {
-    let pick = cands.find((c) => (used.get(c.provider.id) ?? 0) < PLAN_CAP_PER_PROVIDER) ?? cands[0] ?? null;
+    // Challenger: cap each provider at its minimum possible budget, so the
+    // plan never assigns more calls than the provider can certainly serve.
+    let pick = cands.find((c) => (used.get(c.provider.id) ?? 0) < (PLAN_CAP_2[c.provider.id] ?? PLAN_CAP_PER_PROVIDER)) ?? cands[0] ?? null;
     if (pick !== null) { planPrimary[i] = pick; used.set(pick.provider.id, (used.get(pick.provider.id) ?? 0) + 1); }
   }
 }
