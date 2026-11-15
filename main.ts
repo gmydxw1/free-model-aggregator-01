@@ -12,7 +12,7 @@
 //    every unconstrained request;
 //  - on 402 / 429 / 5xx, never answer with the error and never retry the
 //    same provider for that request: count the failure and move to the next
-//    candidate. A provider that failed twice is treated as down unless
+//    candidate. A provider that failed three times is treated as down unless
 //    nothing else can serve the request. A 402 is not a reason to wait:
 //    in this trial it is either a scheduled refusal or a spent budget,
 //    and the next candidate is already waiting.
@@ -47,8 +47,8 @@ const FIXED_ANTHROPIC_CREATED_AT = '2026-01-01T00:00:00Z';
 const PLAN_CAP_1: Record<string, number> = { groq: 4, cerebras: 3, gemini: 4, zai: 3, openrouter: 4, sambanova: 3, pollinations: 3, cloudflare: 4, ovh: 3, kilol: 3 };
 const PLAN_CAP_2: Record<string, number> = { groq: 9, cerebras: 5, gemini: 6, zai: 4, openrouter: 10, sambanova: 4, pollinations: 10, cloudflare: 7, ovh: 5, kilol: 12 };
 const PLAN_CAP_PER_PROVIDER = 6;
-/** A provider that refused twice is down, unless it is the last resort. */
-const DEAD_AFTER_FAILURES = 2;
+/** A provider that refused three times is down, unless it is the last resort. */
+const DEAD_AFTER_FAILURES = 3;
 
 const ENV_URL = (process.env.MAKEFUN_ENV_URL ?? '').replace(/\/+$/, '');
 const PROMPT_FILE = process.env.MAKEFUN_PROMPT_FILE ?? '';
